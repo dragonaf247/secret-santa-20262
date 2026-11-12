@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173d2b">
+  <title>Secret Santa 2026</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="snow" aria-hidden="true"></div>
+  <div class="start" id="startOverlay">
+    <div class="gift">🎁</div>
+    <h1>Chạm để mở hộp quà</h1>
+    <p>Bắt đầu hành trình Secret Santa 2026</p>
+    <button class="btn" id="startButton">Mở hộp quà</button>
+  </div>
+  <audio id="bgMusic" loop preload="none">
+    <source src="https://raw.githubusercontent.com/dragonaf247/secret-santa-2026/main/vincemcgill-santa-claus-614837.mp3" type="audio/mpeg">
+  </audio>
+
+  <header class="topbar">
+    <a class="brand" href="/">🎅 SECRET SANTA <span>2026</span></a>
+    <div class="nav">
+      <button class="btn ghost small" id="musicToggle">🔊 Nhạc: Bật</button>
+      <span id="navUser"></span>
+      <button class="btn small hidden" id="logoutButton">Đăng xuất</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow">MÙA LỄ HỘI 2026</p>
+      <h1>Trạm Bưu Tá <span>Secret Santa</span></h1>
+      <p>Gửi đi một món quà, nhận lại một mùa Giáng Sinh đáng nhớ.</p>
+    </section>
+
+    <section id="authView" class="auth-grid">
+      <article class="card intro">
+        <div class="big">🎄</div>
+        <h2>Lan tỏa niềm vui mùa lễ hội</h2>
+        <p>Đăng nhập để tham gia Secret Santa, gửi Wishlist và theo dõi đăng ký của bạn.</p>
+        <p>🎁 Đăng ký tham gia</p><p>📝 Quản lý Wishlist và Blacklist</p><p>🔐 Tài khoản riêng, dữ liệu riêng</p>
+      </article>
+      <article class="card auth">
+        <div class="tabs">
+          <button class="tab active" data-tab="login">Đăng nhập</button>
+          <button class="tab" data-tab="register">Đăng ký</button>
+        </div>
+        <form id="loginForm" class="form">
+          <h2>Chào mừng trở lại!</h2>
+          <label>Email hoặc username<input name="identifier" required autocomplete="username"></label>
+          <label>Mật khẩu<input name="password" type="password" required autocomplete="current-password"></label>
+          <button class="btn full">Đăng nhập</button>
+        </form>
+        <form id="registerForm" class="form hidden">
+          <h2>Tạo tài khoản</h2>
+          <label>Họ và tên<input name="full_name" required minlength="2" maxlength="100"></label>
+          <label>Username<input name="username" required minlength="3" maxlength="40" pattern="[A-Za-z0-9_.-]+"></label>
+          <label>Email<input name="email" type="email" required maxlength="160"></label>
+          <label>Mật khẩu<input name="password" type="password" required minlength="10" maxlength="72" autocomplete="new-password"></label>
+          <button class="btn full">Tạo tài khoản</button>
+          <small>Tài khoản mới luôn được cấp quyền User. Không thể tự đăng ký Admin.</small>
+        </form>
+        <p id="authMessage" class="message" role="status"></p>
+      </article>
+    </section>
+
+    <section id="userView" class="hidden">
+      <div class="section-title"><div><p class="eyebrow">KHU VỰC CỦA BẠN</p><h2>Xin chào, <span id="welcomeName"></span> 👋</h2></div><b class="pill">USER</b></div>
+      <div class="columns">
+        <article class="card panel">
+          <h3>🎁 Đăng ký Secret Santa</h3>
+          <p class="muted">Chia sẻ mong muốn và những điều bạn muốn tránh.</p>
+          <form id="registrationForm" class="form">
+            <label>Wishlist<textarea name="wishlist" rows="4" maxlength="1200" required placeholder="Ví dụ: sách, đồ handmade..."></textarea></label>
+            <label>Blacklist<textarea name="blacklist" rows="4" maxlength="1200" required placeholder="Ví dụ: không đồ ăn cay..."></textarea></label>
+            <button class="btn full">Gửi đăng ký 🎅</button>
+          </form>
+          <p id="registrationMessage" class="message"></p>
+        </article>
+        <article class="card panel">
+          <h3>📬 Đăng ký của tôi</h3>
+          <div id="myRegistrations" class="records">Đang tải...</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="adminView" class="hidden">
+      <div class="section-title"><div><p class="eyebrow">KHU VỰC QUẢN TRỊ</p><h2>Bảng điều khiển Admin 🛡️</h2></div><b class="pill admin">ADMIN</b></div>
+      <div class="stats">
+        <article class="card"><small>Tổng người dùng</small><strong id="statUsers">0</strong></article>
+        <article class="card"><small>Lượt đăng ký</small><strong id="statRegs">0</strong></article>
+        <article class="card"><small>Quản trị viên</small><strong id="statAdmins">0</strong></article>
+      </div>
+      <article class="card panel">
+        <div class="table-head"><h3>👥 Thông tin người dùng</h3><input id="userSearch" placeholder="Tìm tên, email, username..."></div>
+        <div class="table-wrap"><table><thead><tr><th>Họ tên</th><th>Username</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Ngày tạo</th><th></th></tr></thead><tbody id="usersTable"></tbody></table></div>
+      </article>
+      <article class="card panel">
+        <h3>🎄 Đăng ký Secret Santa</h3>
+        <div class="table-wrap"><table><thead><tr><th>Họ tên</th><th>Thời gian</th><th>Wishlist</th><th>Blacklist</th><th>Trạng thái</th></tr></thead><tbody id="registrationsTable"></tbody></table></div>
+      </article>
+      <p id="adminMessage" class="message"></p>
+    </section>
+    <footer>Made with ❤️ for Secret Santa 2026</footer>
+  </main>
+
+  <dialog id="userDialog" class="dialog">
+    <form method="dialog"><button class="close">×</button></form>
+    <div id="userDetail"></div>
+  </dialog>
+</body>
+</html>
